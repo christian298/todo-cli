@@ -6,6 +6,11 @@ use clap::arg_enum;
 use structopt::StructOpt;
 use todo_store::TodoStore;
 use ui::draw_todo_list;
+use termion::{event::Key};
+use tui::Terminal;
+use tui::backend::TermionBackend;
+use std::io;
+use termion::raw::IntoRawMode;
 
 arg_enum! {
     #[derive(Debug, PartialEq)]
@@ -36,16 +41,22 @@ fn main() {
     let opt: Opt = Opt::from_args();
     let todo_store = TodoStore::new();
 
-    if opt.list {
-        let todos = todo_store.read_todos().unwrap();
-        draw_todo_list(todos, opt.filter).expect("Failed to draw todo list");
-    }
+    let stdout = io::stdout().into_raw_mode()?;
+    let backend = TermionBackend::new(stdout);
+    let mut terminal = Terminal::new(backend).expect("");
 
-    if !opt.todo.is_empty() {
-        todo_store.add_todo(opt.todo, false);
-    }
+    terminal.clear()?;
 
-    if opt.done > 0 {
-        todo_store.toggle_status(true, opt.done);
-    }
+    // if opt.list {
+    //     let todos = todo_store.read_todos().unwrap();
+    //     draw_todo_list(todos, opt.filter).expect("Failed to draw todo list");
+    // }
+    //
+    // if !opt.todo.is_empty() {
+    //     todo_store.add_todo(opt.todo, false);
+    // }
+    //
+    // if opt.done > 0 {
+    //     todo_store.toggle_status(true, opt.done);
+    // }
 }

@@ -1,12 +1,14 @@
 use super::todo::Todo;
 use super::Filter;
 use std::io;
-use termion::raw::IntoRawMode;
+use termion::raw::{IntoRawMode, RawTerminal};
 use tui::backend::TermionBackend;
 use tui::layout::{Constraint, Layout};
 use tui::style::{Color, Style};
 use tui::widgets::{Block, Borders, Row, Table, Widget};
 use tui::Terminal;
+use std::io::Stdout;
+
 
 pub fn draw_todo_list(todos: Vec<Todo>, filter: Filter) -> Result<(), io::Error> {
     let stdout = io::stdout().into_raw_mode()?;
